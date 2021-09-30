@@ -656,7 +656,7 @@ ditch <- gl(94, 1, length = 188)
 
 mon <- gl(2, 94, labels = c("6","7"))
 
-#分组信息：土壤处理
+#groups
 
 trt <- factor(rep(c("GNN","DYN","FYN","GNS","GYN","FNS","CYN","CNN","DYN","DYN",
                      "FYS","FYS","DNN","CYN","FYN","DYS","DNS","FNN","FYN","CYN",
