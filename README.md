@@ -635,3 +635,61 @@ anova_inrecoverylegume
 #effect size
 
 eta_squared(model_inrecovery_legume)
+
+
+
+
+
+
+####PRC analysis
+library(vegan)
+
+library(ggplot2)
+
+data1<-read.csv("/Users/chenguanggao/Desktop/2periods_all_treatments.csv",
+                header = TRUE,
+                row.names = 1)
+
+dim(data1)
+
+ditch <- gl(94, 1, length = 188)
+
+mon <- gl(2, 94, labels = c("6","7"))
+
+#分组信息：土壤处理
+
+trt <- factor(rep(c("GNN","DYN","FYN","GNS","GYN","FNS","CYN","CNN","DYN","DYN",
+                     "FYS","FYS","DNN","CYN","FYN","DYS","DNS","FNN","FYN","CYN",
+                     "GYN","DYS","GYS","GYS","GYN","CYN","DNN","GNS","DYS","DNN" ,
+                     "FYS","CYN","FYS","CYN","FYN","CNN","GYS","FNS","DYS","FYS",
+                     "GNN","CNN","CYN","GYN","FYS","DNS","CYN","DYN","CNN","GYS",
+                     "CNN","FYN","DYS","GYN","CYN","FNN","CYN","CNN","FNN","FYS",
+                     "DYS","GYS","GYN","DNS","GNS","FNS","GYN","GYN","GYS","FYN",
+                     "DYN","CYN","GNS","CNN","DYS","DYS","FNS","DYN","CNN","FYN",
+                     "GYS","FNN","DYN","FYN","GYS","CYN","FYS","CYN","GNN","DNN",
+                     "DYN","GNN","CNN","DNS" ), 2))
+
+#PRC 
+
+mod <- prc(response = data1, treatment = trt, time = mon)
+
+rda(data1~trt*mon+Condition(mon))
+
+mod
+
+summary(mod)
+
+#illustration, total cover of species >50
+
+plot(mod, species = TRUE, select = colSums(data1) > 50, 
+     scaling = 2,axis = 1, correlation = FALSE, type = "l",
+     ylim = c(-1,3),legpos =NA,lty = 6,
+     xlab = "Month")
+
+#test significance
+
+ctrl <- how(plots = Plots(strata = ditch,type = 'free'), within = Within(type = 'series'), nperm = 999)
+
+anova(mod, permutations = ctrl, first = TRUE)
+
+mod$CCA$eig/sum(mod$CCA$eig)
